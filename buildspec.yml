@@ -6,9 +6,10 @@ phases:
       - echo Logging in to Amazon ECR...
       - aws --version
       - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
-      - REPOSITORY_URI=public.ecr.aws/y2z0p2d5/react-build-container-test
+      - REPOSITORY_URI=242056593911.dkr.ecr.us-east-2.amazonaws.com/react-build-container-test
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+      - SECRET_ARN="raghav_test" export REACT_APP_NAME=$(aws secretsmanager get-secret-value --secret-id $SECRET_ARN | jq --raw-output '.SecretString' | jq -r .NAME)
   build:
     commands:
       - echo Build started on `date`
