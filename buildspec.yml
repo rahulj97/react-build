@@ -15,7 +15,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - export REACT_APP_NAME=$(aws secretsmanager get-secret-value --secret-id $SECRET_ARN | jq --raw-output '.SecretString' | jq -r .NAME)
+      - SECRET_ARN="raghav_test" export REACT_APP_NAME=$(aws secretsmanager get-secret-value --secret-id $SECRET_ARN | jq --raw-output '.SecretString' | jq -r .NAME)
       - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
 
