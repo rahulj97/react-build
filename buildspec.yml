@@ -11,13 +11,14 @@ phases:
       - REPOSITORY_URI=242056593911.dkr.ecr.us-east-2.amazonaws.com/react-build-container-test
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
-      # - SECRET_ARN="raghav_test" export REACT_APP_NAME=$(aws secretsmanager get-secret-value --secret-id $SECRET_ARN | jq --raw-output '.SecretString' | jq -r .NAME)
   build:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
+      - export REACT_APP_NAME=$(aws secretsmanager get-secret-value --secret-id $SECRET_ARN | jq --raw-output '.SecretString' | jq -r .NAME)
       - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+
   post_build:
     commands:
       - echo Build completed on `date`
