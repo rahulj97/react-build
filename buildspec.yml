@@ -14,6 +14,7 @@ phases:
   build:
     commands:
       - echo Build started on `date`
+      - echo env value testing $REACT_APP_NAME
       - echo Building the Docker image...
       - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
@@ -23,7 +24,6 @@ phases:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
       - docker push $REPOSITORY_URI:latest
-      - SECRET_ARN="raghav_test" export REACT_APP_NAME=$(aws secretsmanager get-secret-value --secret-id $SECRET_ARN | jq --raw-output '.SecretString' | jq -r .NAME)
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file...
       - printf '[{"name":"nodeapp","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
